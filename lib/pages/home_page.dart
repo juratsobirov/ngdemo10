@@ -11,34 +11,47 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-String name = "No name";
+  String name = "No name";
 
+  List<User> userList = [
+    User(id: 1001, username: 'Jur\'at'),
+    User(id: 1002, username: 'Yunus'),
+  ];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    User user = new User(id: 1001, username:"Jur'at",);
-    Prefs.storeUser(user);
+    Prefs.storeUserList(userList);
+    _loadUserList();
 
-    _loadUser();
+    // User user = new User(
+    //   id: 1001,
+    //   username: "Jur'at",
+    // );
+    // Prefs.storeUser(user);
+    // _loadUser();
 
     // Prefs.storeName("Jur'at");
     // _loadName();
     // Prefs.removeName();
-
   }
 
-  _loadUser() async{
+  _loadUserList() async {
+    List<User>? result = await Prefs.loadUserList();
+    this.name = result!.length.toString();
+  }
+
+  _loadUser() async {
     User? user = await Prefs.loadUser();
-    setState((){
+    setState(() {
       this.name = user!.toMap().toString();
     });
   }
 
   _loadName() async {
     String name = await Prefs.loadName();
-    setState((){
-    this.name = name;
+    setState(() {
+      this.name = name;
     });
     print(name);
   }
@@ -50,13 +63,13 @@ String name = "No name";
         backgroundColor: Colors.blue,
         title: Text("Shared Preferences"),
       ),
-
-      body:Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              name, style: TextStyle(fontSize: 20),
+              name,
+              style: TextStyle(fontSize: 20),
             ),
           ],
         ),
